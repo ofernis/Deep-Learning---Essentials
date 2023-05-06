@@ -289,7 +289,7 @@ class CrossEntropyLoss(Layer):
     def __init__(self):
         super().__init__()
 
-    def forward(self, x, y):
+    def forward(self, x: torch.Tensor, y: torch.Tensor):
         """
         Computes cross-entropy loss directly from class scores.
         Given class scores x, and a 1-hot encoding of the correct class yh,
@@ -404,7 +404,9 @@ class Sequential(Layer):
         # TODO: Implement the forward pass by passing each layer's output
         #  as the input of the next.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        out = x
+        for layer in self.layers:
+            out = layer.forward(out, **kw)
         # ========================
 
         return out
@@ -416,7 +418,9 @@ class Sequential(Layer):
         #  Each layer's input gradient should be the previous layer's output
         #  gradient. Behold the backpropagation algorithm in action!
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        for layer in reversed(self.layers):
+            dout = layer.backward(dout)
+        din = dout
         # ========================
 
         return din
@@ -426,7 +430,8 @@ class Sequential(Layer):
 
         # TODO: Return the parameter tuples from all layers.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        for layer in self.layers:
+            params.extend(layer.params())
         # ========================
 
         return params
