@@ -489,7 +489,12 @@ class MLP(Layer):
 
         # TODO: Build the MLP architecture as described.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        activation_fn = ReLU if activation=='relu' else Sigmoid
+        in_size = in_features
+        for out_size in [*hidden_features, num_classes]:
+            layers.append(Linear(in_size, out_size))
+            layers.append(activation_fn())      
+            
         # ========================
 
         self.sequence = Sequential(*layers)
