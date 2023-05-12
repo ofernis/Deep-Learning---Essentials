@@ -72,7 +72,7 @@ class VanillaSGD(Optimizer):
             #  Update the gradient according to regularization and then
             #  update the parameters tensor.
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            p -= self.learn_rate * (dp + self.reg * p)
             # ========================
 
 
