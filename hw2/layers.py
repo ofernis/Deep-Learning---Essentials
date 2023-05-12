@@ -491,10 +491,12 @@ class MLP(Layer):
         # ====== YOUR CODE: ======
         activation_fn = ReLU if activation=='relu' else Sigmoid
         in_size = in_features
-        for out_size in [*hidden_features, num_classes]:
+        for out_size in hidden_features:
             layers.append(Linear(in_size, out_size))
-            layers.append(activation_fn())      
+            layers.append(activation_fn())
+            in_size = out_size
             
+        layers.append(Linear(out_size, num_classes))            
         # ========================
 
         self.sequence = Sequential(*layers)
