@@ -311,7 +311,7 @@ class LayerTrainer(Trainer):
         
         self.optimizer.step()
         
-        num_correct = torch.sum(y_pred == y)
+        num_correct = torch.sum(y_pred == y).item()
         # ========================
 
         return BatchResult(loss, num_correct)
