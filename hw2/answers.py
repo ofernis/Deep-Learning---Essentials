@@ -15,22 +15,31 @@ part1_q1 = r"""
     1. The shape of this tensor will be (64, 512, 64, 1024).
     1. This Jacobian is sparse. The only elements that are not zero, correspond to the an index (i,j,i,k),
         meaning that this is the derivative of the sample i.
-    1. No, we don't need to materialize the Jacobian tensor $\pderiv{\mat{Y}}{\mat{X}}$ in order to calculate the downstream gradient $\delta\mat{X}$\\
-        Instead, we can use the chain rule to compute the gradient:\\
-        $\pderiv{L}{\mat{X}} = \pderiv{L}{\mat{Y}} \pderiv{\mat{Y}}{\mat{X}}$ \\
-        $\pderiv{L}{\mat{Y}}$ is given to use and:\\
+    1. No, we don't need to materialize the Jacobian tensor $\pderiv{\mat{Y}}{\mat{X}}$ in order to calculate the downstream gradient $\delta\mat{X}$
+    
+        Instead, we can leverage the chain rule to compute the gradient efficiently:
+        $$
+        \pderiv{L}{\mat{X}} = \pderiv{L}{\mat{Y}} \pderiv{\mat{Y}}{\mat{X}}
+        $$
+        - $\pderiv{L}{\mat{Y}}$ is given to us.
+        - $\pderiv{\mat{Y}}{\mat{X}}$ is W^T (because \mat{Y}=\mat{X} \mattr{W} + \vec{b}).
         
 
 1. For the Jacobian tensor $\pderiv{\mat{Y}}{\mat{W}}$:
     1. The shape of this tensor will be (64, 512, 1024, 512).
     1. This Jacobian is/isnot sparse. why and which elements?
     1. Given the gradient of the output 
+    
+# TODO
 """
 
 part1_q2 = r"""
 **Your answer:**
 
+**Yes**, backpropagation is required in order to train neural networks.
 
+This is because without backpropagation, it would be difficult and computationally expensive (and even infeasible) to calculate these gradients manually.
+Backpropagation automates the process, making training feasible and efficient.
 
 """
 
@@ -167,19 +176,94 @@ SGD's ability to update parameters based on individual examples (or mini-batches
 
 2. **Faster convergence**: While SGD's updates tends to be noisier than GD's, it can actually lead to faster convergence in practice.
 
-3. **Generalization*: SGD's inherent stochasticity during training acts as a form of regularization, preventing overfitting and promoting better generalization.
+3. **Generalization**: SGD's inherent stochasticity during training acts as a form of regularization, preventing overfitting and promoting better generalization.
 
 4. **Avoiding local minima**: Deep learning models often have complex, high-dimensional loss landscapes with numerous local minima. GD relies on the entire dataset and may get trapped in suboptimal local minima.
 SGD's stochastic nature provides a mechanism for escaping these suboptimal solutions.
+
+###  Answer 4
+1. **Yes**, this method will produce a gradient equivalent to GD. We remember that:
+$$
+L(\vec{\theta}) = \frac{1}{N} \sum_{i=1}^{N} \ell(\vec{y}^i, \hat{\vec{y}^i}) + R(\vec{\theta})
+$$
+
+We can re-write the above using $K$ disjoint batches (assume we keep the same order for the $i$s):
+$$
+L(\vec{\theta}) 
+= \frac{1}{N} \sum_{j=1}^{K} \sum_{i\ in B_j} \ell(\vec{y}^i, \hat{\vec{y}^i}) + R(\vec{\theta})
+$$
+Thus, the forward calculation is equivalent.
+
+Now, we have $L(\vec{\theta})$ and wish to calculate $frac{\partial L}{\partial \vec{x}}$, we don't need the dataset anymore for this calculation, so it is equivalent to GD's.
+
+2. 
 
 """
 
 part2_q4 = r"""
 **Your answer:**
 
-HI
+Using the **chain rule** we get:
+$$
+\frac{\partial f}{\partial x_0} = \frac{\partial f}{\partial f_n} \frac{\partial f_n}{\partial f_{n-1}} \cdots \frac{\partial f_1}{\partial x_0}
+$$
 
+**In forward mode:**
 
+We can calculate the derivative with the following equations:
+$$
+\begin{align}
+\frac{\partial f_1}{\partial x_0} &\\
+\frac{\partial f_2}{\partial x_0} &= \frac{\partial f_2}{\partial f_1} \frac{\partial f_1}{\partial x_0} \\
+& \vdots \\
+\frac{\partial f_n}{\partial x_0} &= \frac{\partial f_{n-1}}{\partial f_{n-2}} \frac{\partial f_{n-2}}{\partial x_0} \\
+\frac{\partial f}{\partial x_0} &= \frac{\partial f}{\partial f_n} \frac{\partial f_n}{\partial x_0} \\
+\end{align}
+$$
+
+We can compute the above using only 2 variables to store the calculations - accumalated derivative $\delta$ and current derivative $d$:
+$$
+\begin{align*}
+&1.~ \text{Init:} \\
+& \quad d_1 \leftarrow \frac{\partial f_1}{\partial x_0} \\
+& \quad \delta_1 \leftarrow d \\
+&2.~ \text{for}~ i=2,...,n:\\
+& \quad d_i \leftarrow \frac{\partial f_i}{\partial f_{i-1}} \\
+& \quad \delta_i \leftarrow \delta_{i-1} \cdot d_i \\
+&3.~ d_f \leftarrow \frac{\partial f}{\partial f_n} \\
+&4.~ \text{Return}~ \delta_n \cdot d_f \\
+\end{align*}
+$$
+
+This way, we reduced the memory complexity to $\mathcal{O}(1)$ while keeping time complexity at $\mathcal{O}(n)$.
+
+**In backward mode:**
+
+This time, we can calculate the derivative with the following equations:
+$$
+\begin{align}
+\frac{\partial f}{\partial f_n} &\\
+\frac{\partial f}{\partial f_{n-1}} &= \frac{\partial f}{\partial f_n} \frac{\partial f_n}{\partial f_{n-1}} \\
+& \vdots \\
+\frac{\partial f}{\partial f_1} &= \frac{\partial f}{\partial f_2} \frac{\partial f_2}{\partial f_1} \\
+\frac{\partial f}{\partial x_0} &= \frac{\partial f}{\partial f_1} \frac{\partial f_1}{\partial x_0} \\
+\end{align}
+$$
+We can compute the above using the following algorithm;
+$$
+\begin{align*}
+&1.~ \text{Init:} \\
+& \quad d_n \leftarrow \frac{\partial f}{\partial f_n} \\
+& \quad \delta_1 \leftarrow d \\
+&2.~ \text{for}~ i=n,...,2:\\
+& \quad d_i \leftarrow \frac{\partial f_i}{\partial f_{i-1}} \\
+& \quad \delta_i \leftarrow \delta_{i+1} \cdot d_i \\
+&3.~ d_f \leftarrow \frac{\partial f_1}{\partial x_0} \\
+&4.~ \text{Return}~ \delta_n \cdot d_f \\
+\end{align*}
+$$
+
+Again, we reduced the memory complexity to $\mathcal{O}(1)$ while keeping time complexity at $\mathcal{O}(n)$.
 """
 
 # ==============
