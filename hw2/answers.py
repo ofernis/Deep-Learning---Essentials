@@ -71,10 +71,10 @@ def part2_optim_hp():
     # TODO: Tweak the hyperparameters to get the best results you can.
     # You may want to use different learning rates for each optimizer.
     # ====== YOUR CODE: ======
-    wstd = 0.1
-    lr_vanilla = 0.025
-    lr_momentum = 0.015
-    lr_rmsprop = 0.0003
+    wstd = 0.05
+    lr_vanilla = 0.021
+    lr_momentum = 0.0022
+    lr_rmsprop = 0.00025
     reg = 0.001
     # ========================
     return dict(
@@ -95,7 +95,7 @@ def part2_dropout_hp():
     # dropout.
     # ====== YOUR CODE: ======
     wstd = 0.05
-    lr = 0.02
+    lr = 0.0022
     # ========================
     return dict(wstd=wstd, lr=lr)
 
@@ -103,16 +103,17 @@ def part2_dropout_hp():
 part2_q1 = r"""
 **Your answer:**
 
+**1.1**: Our baseline is no dropout setting, with pre-tuned hyperparameters for an overfitted model (overfitting can be inferred from the graphs, where the train accuracy is much higher than the test accuracy).
+We see that the training accuracy is higher without dropout in comparison to using dropout, but the test accuracy is lower for the same dropout settings comparison.
+This fits what we expected, as the dropout method "omits" training information and thus decrease the training accuracy, but due to its randomness, it makes the network less sensitive to the influence of single
+neurons and therefore demonstrate better generalization. Looking at our graphs, it is worth mention that as the dropout level increases, the training accuracy decreases (due to the reason we mentioned earlier).
+An oppisite effect is seen in the test accuracy graphs, where the lower accuracy corresponds to higher dropout level (0.8) rather than the lower dropout level (0.4).
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+**1.2**: As we see in the graphs, the high-dropout setting had lower accuracy than the low-dropout setting, indicating a lower generalization competence for this setting.
+This might stem from the fact that too many neurons activations are being dropped on this setting (80% percent on average), leading to insufficient optimization in the training phase.
+As we expect, the best performance of the optimization is related to a medium level of dropout, which in our case is 0.4, in comparison to 0 (no dropout) and to 0.8 (high-dropout).
 
 """
-
 part2_q2 = r"""
 **Your answer:**
 
@@ -280,7 +281,10 @@ def part3_arch_hp():
     out_activation = "none"  # activation function to apply at the output layer
     # TODO: Tweak the MLP architecture hyperparameters.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    n_layers = 4
+    hidden_dims = 32
+    activation = 'relu'
+    out_activation = 'sigmoid'
     # ========================
     return dict(
         n_layers=n_layers,
@@ -302,7 +306,10 @@ def part3_optim_hp():
     #    What you returns needs to be a callable, so either an instance of one of the
     #    Loss classes in torch.nn or one of the loss functions from torch.nn.functional.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    loss_fn = torch.nn.CrossEntropyLoss()
+    lr = 0.01
+    weight_decay = 0.015
+    momentum = 0.93
     # ========================
     return dict(lr=lr, weight_decay=weight_decay, momentum=momentum, loss_fn=loss_fn)
 
