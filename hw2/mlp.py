@@ -3,6 +3,7 @@ from torch import Tensor, nn
 from typing import Union, Sequence
 from collections import defaultdict
 
+
 ACTIVATIONS = {
     "relu": nn.ReLU,
     "tanh": nn.Tanh,
@@ -55,7 +56,20 @@ class MLP(nn.Module):
         #  - Either instantiate the activations based on their name or use the provided
         #    instances.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        super().__init__()
+        dims = [in_dim] + dims
+        layers = []
+        
+        for i in range(len(dims) - 1):
+            layers.append(nn.Linear(in_features=dims[i], out_features=dims[i + 1], bias=True))
+            if isinstance(nonlins[i], str):
+                layers.append(ACTIVATIONS[nonlins[i]](**ACTIVATION_DEFAULT_KWARGS[nonlins[i]]))
+            elif isinstance(nonlins[i], nn.Module):
+                layers.append(nonlins[i])
+            else:
+                raise Exception(f"nonlins parameter {nonlins[i]} must be a sequence of str and\or nn.Module")        
+
+        self.sequence = nn.Sequential(*layers)
         # ========================
 
     def forward(self, x: Tensor) -> Tensor:
@@ -66,5 +80,12 @@ class MLP(nn.Module):
         # TODO: Implement the model's forward pass. Make sure the input and output
         #  shapes are as expected.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        assert x.shape[1] == self.in_dim, f"In dimension {x.shape[1]} doesn't match param {self.in_dim}"
+        
+        z = x
+        for layer in self.sequence:
+            z = layer(z)
+            
+        assert z.shape[1] == self.out_dim, f"Out dimension {z.shape[1]} doesn't match param {self.out_dim}"
+        return z
         # ========================
