@@ -6,6 +6,7 @@ import random
 import argparse
 import itertools
 import torchvision
+from torch import nn
 from torch.utils.data import DataLoader
 from torchvision.datasets import CIFAR10
 
@@ -45,7 +46,29 @@ def mlp_experiment(
     #  Note: use print_every=0, verbose=False, plot=False where relevant to prevent
     #  output from this function.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    
+    #  Create a BinaryClassifier model
+    D = len(next(iter(dl_train))[0])
+    model = BinaryClassifier(
+        MLP(2, [width]*depth + [2], ['tanh']*depth + ['none'])
+    )
+    
+    # Initialize the trainer
+    loss_fn = nn.CrossEntropyLoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.015, weight_decay=0.015, momentum=0.91)
+    trainer = ClassifierTrainer(model, loss_fn, optimizer)
+    
+    # Train
+    fit_res = trainer.fit(dl_train, dl_valid, num_epochs=n_epochs, print_every=0)
+    valid_acc = fit_res.test_acc[-1]
+    
+    # Tune threshold with validation set
+    thresh = select_roc_thresh(model, *dl_valid.dataset.tensors)
+    model.threshold = thresh
+    
+    # evaluate for one epoch on test
+    test_acc = trainer.test_epoch(dl_test, verbose=False).accuracy
+    
     # ========================
     return model, thresh, valid_acc, test_acc
 

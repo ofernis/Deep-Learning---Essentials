@@ -273,18 +273,38 @@ class ClassifierTrainer(Trainer):
         #  - Update parameters
         #  - Classify and calculate number of correct predictions
         # ====== YOUR CODE: ======
-        print(f"{y.shape=}")
-        y_pred = self.model.classify(X)
-        print(f"{y_pred.shape=}")
-        batch_loss = self.loss_fn(y_pred.float(), y.float())
         
+        # # forward
+        # scores = self.model(X)
+        # batch_loss = self.loss_fn(scores, y)
+        
+        # # backward
+        # self.optimizer.zero_grad()
+        # batch_loss.backward().item()
+        
+        # # update parameters     
+        # self.optimizer.step()
+        
+        # # classify
+        # y_pred = self.model.classify(X).detach()
+        # num_correct = torch.sum(y_pred == y).item()
+        
+        # Forward pass
+        scores = self.model(X)
+
+        # Compute loss
+        loss = self.loss_fn(scores, y)
+
+        # Backward pass and parameter update
         self.optimizer.zero_grad()
-        loss_grad = self.loss_fn.backward()
-        self.model.backward(loss_grad)
-        
+        loss.backward()
         self.optimizer.step()
-        
+
+        # Classify and calculate number of correct predictions
+        y_pred = self.model.classify(X)
         num_correct = torch.sum(y_pred == y).item()
+
+        batch_loss = loss.item()
         # ========================
 
         return BatchResult(batch_loss, num_correct)
@@ -304,9 +324,12 @@ class ClassifierTrainer(Trainer):
             #  - Forward pass
             #  - Calculate number of correct predictions
             # ====== YOUR CODE: ======
-            y_pred = self.model.classify(X)
+            # forward
+            scores = self.model(X)
+            batch_loss = self.loss_fn(scores, y).item()
             
-            batch_loss = self.loss_fn(y_pred.float(), y.float())
+            # classify
+            y_pred = self.model.classify(X)
             num_correct = torch.sum(y_pred == y).item()
             # ========================
 

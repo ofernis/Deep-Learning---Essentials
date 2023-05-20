@@ -59,7 +59,8 @@ class Classifier(nn.Module, ABC):
         """
         # TODO: Calculate class probabilities for the input.
         # ====== YOUR CODE: ======
-        return nn.functional.softmax(z, dim=1)
+        softmax = nn.Softmax(dim=1)
+        return softmax(z)
         # ========================   
 
     def classify(self, x: Tensor) -> Tensor:
@@ -128,8 +129,10 @@ class BinaryClassifier(Classifier):
         #  greater or equal to the threshold.
         #  Output should be a (N,) integer tensor.
         # ====== YOUR CODE: ======
-        pos_class_probs = y_proba[:, self.positive_class]
-        return torch.where(pos_class_probs >= self.threshold, self.positive_class, 1 - self.positive_class).int()
+        positive_proba = y_proba[:, self.positive_class]
+        return (positive_proba >= self.threshold).int()
+        # pos_class_probs = y_proba[:, self.positive_class]
+        # return torch.where(pos_class_probs >= self.threshold, self.positive_class, 1 - self.positive_class).int()
         # ========================
 
 
@@ -178,7 +181,20 @@ def plot_decision_boundary_2d(
     #  plot a contour map.
     x1_grid, x2_grid, y_hat = None, None, None
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    x1_min, x1_max = x[:, 0].min().item() - 1, x[:, 0].max().item() + 1
+    x2_min, x2_max = x[:, 1].min().item() - 1, x[:, 1].max().item() + 1
+    x1_grid, x2_grid = torch.meshgrid(
+        torch.arange(x1_min, x1_max, dx),
+        torch.arange(x2_min, x2_max, dx)
+    )
+    x_grid = torch.stack((x1_grid.flatten(), x2_grid.flatten()), dim=1)
+
+    # Evaluate the classifier on the grid
+    with torch.no_grad():
+        y_hat = classifier.classify(x_grid)
+
+    # Reshape the predictions and convert to numpy arrays
+    y_hat = y_hat.reshape(*x1_grid.shape)
     # ========================
 
     # Plot the decision boundary as a filled contour
@@ -197,8 +213,8 @@ def select_roc_thresh(
     classifier, based on ROC analysis.
 
     :param classifier: The BINARY classifier to use.
-    :param x: The (N, D) feature tensor.
-    :param y: The (N,) labels tensor.
+    :param x: The (N, D) feature tesor.
+    :param y: The (N,) nlabels tensor.
     :param plot: Whether to also create the ROC plot.
     :param ax: If plotting, the ax to plot on. If not provided a new figure will be
         created.
@@ -210,9 +226,15 @@ def select_roc_thresh(
     #  Calculate the index of the optimal threshold as optimal_thresh_idx.
     #  Calculate the optimal threshold as optimal_thresh.
     fpr, tpr, thresh = None, None, None
-    optimal_theresh_idx, optimal_thresh = None, None
+    optimal_thresh_idx, optimal_thresh = None, None
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    y_scores = classifier.predict_proba(x)[:,1].detach()
+    fpr, tpr, thresh = roc_curve(y, y_scores)
+
+    fpr, tpr = torch.Tensor(fpr), torch.Tensor(tpr)
+    dists = (fpr - 0)**2 + (tpr - 1)**2 # the distance of all points from the optimal point on ROC - (0,1)
+    optimal_thresh_idx = torch.argmin(dists)
+    optimal_thresh = thresh[optimal_thresh_idx]
     # ========================
 
     if plot:
