@@ -317,39 +317,62 @@ def part3_optim_hp():
 part3_q1 = r"""
 **Your answer:**
 
+1. Optimization error - **low**  
+This error is between the best predictor we can get from the training set, $\theta^*_{\text{training}}$
+and the best predictor we can get by the optimization $\theta^*_{\text{optimization}}$.  
+The signs for high optimization error are: slow convergence, instability, or erratic behavior **during training**.  
+As we can see in the graph, the training proccess gives us a nice, smooth convergence to a high accuracy,
+so this error is probably low.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+2. Generalization error - **high**  
+This error is between the ideal predictor for the architecture we chose, $\theta^*_{\text{world}}$
+the best predictor we can get from the training set, $\theta^*_{\text{training}}$.  
+The signs for high generalization error are: overfitting (high training accuracy but low validation/test accuracy, and poor performance on new data).  
+As we can see in the graph, we get high training accuracy but our validation accuracy is erratic and low.
+So we can conclude that our generalization error is high.
 
+3. Approximation error - **low**  
+This error is between the ideal predictor (overall) $\theta^*$ and
+the ideal predictor for the architecture we chose, $\theta^*_{\text{world}}$  
+The signs for high approximation error are: underfitting (high training and validation errors, low accuracy, and poor predictive performance).  
+As we can see in the graph, we get high training accuracy (and low error) so our approximation error is probably low.
 """
 
 part3_q2 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+In the data generation process, we know that the validation data has more noise than the training data (0.25 in comparison to 0.2).
+Both datasets were rotated in a different angle, a manipulation that adds more noise to the data. Nevertheless, due to the symmetry of the "moons"
+shapes - it does not change the proportion of FPR to FNR. therefore, understand the both FPR and FNR become higher in the validation set, 
+with relatively same values, according to the symmetry we mentioned above.
 
 """
+
 
 part3_q3 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+You wish to screen as many people as possible at the lowest possible cost and loss of life.
+Would you still choose the same "optimal" point on the ROC curve as above?
+If not, how would you choose it?
+Answer these questions for two possible scenarios:
+
+1. A person with the disease will develop non-lethal symptoms that immediately confirm the diagnosis and can then be treated.
+2. A person with the disease shows no clear symptoms and may die with high probability if not diagnosed early enough, either by your model or by the expensive test.
+
+**Scenario 1 - non-lethal symptoms**  
+*   Because the symptoms are non-leathal, and confirm the diagnosis.
+*   So, we would choose a threshold with more weight towards lower FPR.
+*   This means that less patients will falsly get diagnosed positive for the illness and get the expensive tests to confirm the diagnosis.
+*   By that, we reduced the cost while maintaining the low loss of life.
+
+**Scenatio 2 - lethal illness and no clear symptoms**  
+*   The illness is lethal and the symptoms are not clear, so we must allow more false-negatives to be able to save lives.
+*   Thus, we should choose the threshold with more weight towards the low FNR.
+*   This means that more patients will be falsly diagnosed for the illness, and start the treatment to save their lives
+and that the expensive test will give us the true results later on.
+*   By that, we reduced the loss of life while increasing the cost by a little (more expensive tests).
 
 """
 
@@ -358,12 +381,17 @@ part3_q4 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Analyze your results from the Architecture Experiment.
+
+1. For fixed `depth` and varying `width`, we can see that the performance increases as we increase the width, but at some point the high width tends to create overfit,
+we can see that by the drop in the accuracies at the bottom model of each column.
+2. For fixed `width` and varying `height`, we can see the same behavior as in the first answer above. Increasing the depth makes the model more expressive, 
+but at some point it creates overfit.
+3. The two models, although having the same number of parameters, have huge difference in performance.
+The `depth=1, width=32` has a very poor performance, the low depth enforces a low expressivity, making the model not much different from a regulat SVM model (linear decision boundary).  
+On the other hand, the `depth=4, width=8` is the best performing model in terms of validation and test accuracy. The depth and width are in a good balance and making the model both very expressive, and very generalized for the data.
+4. The threshold selection method was performed the validation set and not on the train set, meaning that the model was able to find its optimal hyperparameter and optimize its performance according to new samples (no data leakage).
+This aided to provide a better generalization and a better accuracy on the test set.
 
 """
 # ==============

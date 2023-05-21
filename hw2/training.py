@@ -86,11 +86,11 @@ class Trainer(abc.ABC):
             actual_num_epochs += 1
             
             train_result = self.train_epoch(dl_train, **kw)
-            train_loss.extend(train_result.losses)
+            train_loss.append(sum(train_result.losses) / len(train_result.losses))
             train_acc.append(train_result.accuracy)
             
             test_result = self.test_epoch(dl_test, **kw)
-            test_loss.extend(test_result.losses)
+            test_loss.append(sum(test_result.losses) / len(test_result.losses))
             test_acc.append(test_result.accuracy)
             
             # ========================
