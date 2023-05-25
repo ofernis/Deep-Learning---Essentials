@@ -8,7 +8,6 @@ from .mlp import MLP, ACTIVATIONS, ACTIVATION_DEFAULT_KWARGS
 
 POOLINGS = {"avg": nn.AvgPool2d, "max": nn.MaxPool2d}
 
-
 class CNN(nn.Module):
     """
     A simple convolutional neural network model based on PyTorch nn.Modules.
@@ -366,7 +365,7 @@ class ResNet(CNN):
                                             dropout=self.dropout,
                                             activation_type= self.activation_type, 
                                             activation_params= self.activation_params))
-                
+            
             if block_size == P:
                 layers.append(POOLINGS[self.pooling_type](**self.pooling_params))
                 

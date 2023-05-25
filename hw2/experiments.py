@@ -130,28 +130,34 @@ def cnn_experiment(
     #   for you automatically.
     fit_res = None
     # ====== YOUR CODE: ======
+    default_kw = {
+        'conv_params' : {'kernel_size': 3, 'padding': 1, 'stride': 1},
+        'activation_type' : 'relu',
+        'activation_params' : {},
+        'pooling_type' : 'max',
+        'pooling_params' : {'kernel_size': 2},
+    }
+    for k, v in default_kw.items():
+        kw[k] = kw.get(k, v)
+    
     dl_train = torch.utils.data.DataLoader(ds_train, bs_train, shuffle=False)
     dl_test = torch.utils.data.DataLoader(ds_test, bs_test, shuffle=False)
 
     # Create model, loss and optimizer instances
     channels = [k for k in filters_per_layer for _ in range(layers_per_block)]
     
-    model = MODEL_TYPES[model_type](
-        model=CNN(
-            in_size=(3,100,100), num_classes=10, channels=channels, pool_every=pool_every, hidden_dims=hidden_dims,
-            conv_params=dict(kernel_size=3, stride=1, padding=1),
-            pooling_params=dict(kernel_size=2), **kw
-        )
-    )
+    model = ArgMaxClassifier(
+        model=model_cls(
+            (3,32,32), 10, channels=channels, pool_every=pool_every, hidden_dims=hidden_dims, **kw))
     
     loss_fn = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(params=model.parameters(), lr=lr, weight_decay=reg)
+    optimizer = torch.optim.Adam(params=model.parameters(), lr=lr, weight_decay=reg)
 
     # Use ClassifierTrainer to run only the training loop a few times.
     trainer = ClassifierTrainer(model, loss_fn, optimizer, device)
     
     fit_res = trainer.fit(dl_train, dl_test, num_epochs=epochs, checkpoints=checkpoints,
-                early_stopping=early_stopping, print_every=batches, **kw)
+                early_stopping=early_stopping, print_every=batches)
     # ========================
 
     save_experiment(run_name, out_dir, cfg, fit_res)
