@@ -499,14 +499,28 @@ An equation: $e^{i\pi} -1 = 0$
 part6_q1 = r"""
 **Your answer:**
 
+1. The model managed to detect the boundaries of the objects in the pictures generally well, but its classifications were mostly wrong. 
+It can be seen in the first picture, where two dolphins were classified as persons and the tail of the third one was classified as a surfboard.
+In the second picture, two dogs were classified as cats and the cat was not detected at all.
+We'll also notice that the dog that was classified correctly had a score of 0.51, which implies a significant level of uncertainty.
+All in all, the model's performance was not good for these 2 pictures.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+2. We'll examine numerous reasons for the model failures and suggest compatible solutions for the issues:
+- A possible reason for the model failure is lack of light/dark images, which makes objects' features less noticable and produces difficulties in the models classification.
+This can be resolved by adding brightness to the images, changing their contrast rate or using similar lighting techniques.
 
+- Another possible reason for the model failures can be a missing class, on which the model was not trained - like in the first picture, where it's seems like there is no dolphin class exists.
+The solution for that issue is to train the model to classify dolphins in addition to the existing classes.
+
+- Furthermore, a bias that is related to image setup in the training phase could lead to a misclassification of objects. 
+For example, in the first image there is a background of sea surface, sun and sky, which might cause the model to classify the dolphins as humans - 
+in case it was trained on pictures of humans with beach background and on pictures of dolphins with underwater background. 
+To solve this problem, more pictures of each class can be provided for the training, containing different backgrounds in order to prevent this kind of classification bias.
+
+- Looking at the second picture, the overlapping of the objects (occlusion) might cause misclassification or missing detection of an object.
+A solution for that might involve some spatial manipulations like rotation, cropping or resizing some objects in the pictures.
+We'll mention that the YOLO model's algorithm divides the image into a grid of boxes, and tries to detect+classify an object in each box according to its center.
+Adjusting the number of boxes in the grid (equivalent to changing the boxes' sizes) could improve the model's performance in this situation.
 """
 
 
@@ -527,25 +541,40 @@ An equation: $e^{i\pi} -1 = 0$
 part6_q3 = r"""
 **Your answer:**
 
+The model detected the objects in the pictures very badly (again the detection of boundaries was good, but a total misclassification was demonstrated):
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+- In the occlusion demonstration picture, a child's body was hidden behind a tree, such that only her head was appearing.
+The child was classified as a bird instead of a person, but with a relatively low confidence level - 0.29.
 
+- In the model bias demonstration picture, a cell phone was caught in different views (front, side, back and angular). 
+The front and the side views were not detected at all, whereas the back view was classified as a remote. Only the angular view was classified correctly (with high confidence level!).
+
+- In the blurring demonstration picture, a running dog was caught without a proper focus - thus the obtained picture was blurred. 
+The dog was classified as a horse with a high confidence level - 0.77.
+
+These all imply some limitations in the model's abilities, leading to poor performance in the given situations.
 """
 
 part6_bonus = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Trying to improve the model's performance on the previous pictures, we made the following manipulations:
 
+- In the occlusion demonstration picture, At first we cropped the tree from the image - yielding another misclassification of the child - dog class with confidence level of 0.25.
+The change of classification indicated that the occlusion with the tree had some influence on the detection.
+We assumed that in addition to the occlusion, model bias is involved due to the rotated face of the child (parallel to the ground), so in order to fix that - we now also performed
+a counter-rotation to the image, resulted with a correct classification of the child - person class with confidence level of 0.50.
+
+- In the model bias demonstration picture, Seeing that only the angular view was classified correctly - We rotated by 45 degrees the front and the back views of the cell phones.
+The result was a correct classification of the back view - cell phone class with confidence level of 0.42 (which was a bit low for what we expected).
+Unfortunately, the rotated front view was still not detected at all, a result that is probably related to training bias - where images of cell phones were taken mainly on angular views (not only rotated).
+
+- In the blurring demonstration picture, we tried to sharpen the image and clarify it, using some common filters.
+The result was still noisy and blurred, though it became a bit clearer, hence the model again misclassified it - this time it detected two objects, horse (same box as earlier, this time with lower confidence level of 0.68)
+and a person (over the dog's tail area). From what we understand, the sharpening manipulation might had amplified some noise in this region of the image, which became now more noticable and mislead the model to detect another object. 
+
+In summery, the manipulations we've performed indeed improved the model's performance over the poorly recognized images.
+It involved some spatial manipulations like rotation and cropping, along with fine-tuning filters like the sharpening, resulting in a correct classification for the majority of the images.
+It is worth to mention that for some situations (like the blurred dog image), a more sophisticated manipulation is required to correctly classify the required objects.
 """
