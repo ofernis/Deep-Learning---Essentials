@@ -10,8 +10,10 @@ for k in [32, 64]:
             bs_train=128,
             bs_test=None,
             batches=100,
-            epochs=50,
+            epochs=60,
             early_stopping=3,
+            lr=7e-4,
+            reg=1e-3,
             # Model Params
             filters_per_layer=[k],
             layers_per_block=l,
@@ -31,8 +33,10 @@ for l in [2, 4, 8]:
             bs_train=128,
             bs_test=None,
             batches=100,
-            epochs=50,
+            epochs=60,
             early_stopping=3,
+            lr=7e-4,
+            reg=1e-3,
             # Model Params
             filters_per_layer=[k],
             layers_per_block=l,
@@ -44,7 +48,7 @@ for l in [2, 4, 8]:
         
 # experiment 1.3
 K = [64, 128]
-for l in [2, 4, 8]:
+for l in [2, 3, 4]:
     cnn_experiment(
         'exp1_3',
         seed=None,
@@ -52,18 +56,18 @@ for l in [2, 4, 8]:
         bs_train=128,
         bs_test=None,
         batches=100,
-        epochs=50,
+        epochs=60,
         early_stopping=3,
+        lr=7e-4,
+        reg=1e-3,
         # Model Params
-        filters_per_layer=K,
+        filters_per_layer=[K],
         layers_per_block=l,
         pool_every=min(l//2, 3),
         hidden_dims=[1024],
         model_type='cnn', 
     )
     
-# - `K=[32]` fixed with `L=8,16,32` varying per run.
-# - `K=[64, 128, 256]` fixed with `L=2,4,8` varying per run.
 
 # experiment 1.4
 for K, L in [([32], [8,16,32]),([64, 128, 256], [2,4,8])]:
@@ -75,10 +79,12 @@ for K, L in [([32], [8,16,32]),([64, 128, 256], [2,4,8])]:
             bs_train=128,
             bs_test=None,
             batches=100,
-            epochs=50,
+            epochs=60,
             early_stopping=3,
+            lr=7e-4,
+            reg=1e-3,
             # Model Params
-            filters_per_layer=K,
+            filters_per_layer=[K],
             layers_per_block=l,
             pool_every=min(l//2, 3),
             hidden_dims=[1024],
