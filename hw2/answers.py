@@ -533,20 +533,16 @@ part6_q1 = r"""
 It can be seen in the first picture, where two dolphins were classified as persons and the tail of the third one was classified as a surfboard.
 In the second picture, two dogs were classified as cats and the cat was not detected at all.
 We'll also notice that the dog that was classified correctly had a score of 0.51, which implies a significant level of uncertainty.
-All in all, the model's performance was not good for these 2 pictures.
-
-2. We'll examine numerous reasons for the model failures and suggest compatible solutions for the issues:
+All in all, the model's performance was not good for these 2 pictures.  
+2. We'll examine numerous reasons for the model failures and suggest compatible solutions for the issues:  
 - A possible reason for the model failure is lack of light/dark images, which makes objects' features less noticable and produces difficulties in the models classification.
-This can be resolved by adding brightness to the images, changing their contrast rate or using similar lighting techniques.
-
+This can be resolved by adding brightness to the images, changing their contrast rate or using similar lighting techniques.  
 - Another possible reason for the model failures can be a missing class, on which the model was not trained - like in the first picture, where it's seems like there is no dolphin class exists.
-The solution for that issue is to train the model to classify dolphins in addition to the existing classes.
-
+The solution for that issue is to train the model to classify dolphins in addition to the existing classes.  
 - Furthermore, a bias that is related to image setup in the training phase could lead to a misclassification of objects. 
 For example, in the first image there is a background of sea surface, sun and sky, which might cause the model to classify the dolphins as humans - 
 in case it was trained on pictures of humans with beach background and on pictures of dolphins with underwater background. 
-To solve this problem, more pictures of each class can be provided for the training, containing different backgrounds in order to prevent this kind of classification bias.
-
+To solve this problem, more pictures of each class can be provided for the training, containing different backgrounds in order to prevent this kind of classification bias.  
 - Looking at the second picture, the overlapping of the objects (occlusion) might cause misclassification or missing detection of an object.
 A solution for that might involve some spatial manipulations like rotation, cropping or resizing some objects in the pictures.
 We'll mention that the YOLO model's algorithm divides the image into a grid of boxes, and tries to detect+classify an object in each box according to its center.
