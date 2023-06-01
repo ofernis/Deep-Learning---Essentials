@@ -22,13 +22,13 @@ part1_q1 = r"""
         \pderiv{L}{\mat{X}} = \pderiv{L}{\mat{Y}} \pderiv{\mat{Y}}{\mat{X}}
         $$
         - $\pderiv{L}{\mat{Y}}$ is given to us.
-        - $\pderiv{\mat{Y}}{\mat{X}}$ is W^T, because $\mat{Y}=\mat{X} \mattr{W} + \vec{b}$.
+        - $\pderiv{\mat{Y}}{\mat{X}}$ is $\mat{W}^T$, because $\mat{Y}=\mat{X} \mattr{W} + \vec{b}$.
         
 
 1. For the Jacobian tensor $\pderiv{\mat{Y}}{\mat{W}}$:
     1. The shape of this tensor will be (64, 512, 1024, 512).
-    1. This Jacobian is/is not sparse. why and which elements?
-    1. Given the gradient of the output 
+    1. Yes, similarly to the previous Jacobian.
+    1. Similarly, we can use the chain rule to calculate this, without materializing the Jacobian.
     
 # TODO
 """
@@ -36,7 +36,7 @@ part1_q1 = r"""
 part1_q2 = r"""
 **Your answer:**
 
-**Yes**, backpropagation is required in order to train neural networks.
+**Yes**, for any practial purposes, backpropagation is required in order to train neural networks.
 
 This is because without backpropagation, it would be difficult and computationally expensive (and even infeasible) to calculate these gradients manually.
 Backpropagation automates the process, making training feasible and efficient.
@@ -186,16 +186,15 @@ SGD's stochastic nature provides a mechanism for escaping these suboptimal solut
 1. **Yes**, this method will produce a gradient equivalent to GD. We remember that:
 $$
 L(\vec{\theta}) = \frac{1}{N} \sum_{i=1}^{N} \ell(\vec{y}^i, \hat{\vec{y}^i}) + R(\vec{\theta})
-$$
-
-We can re-write the above using $K$ disjoint batches (assume we keep the same order for the $i$s):
+$$  
+We can re-write the above using $K$ disjoint batches (assume we keep the same order for the $i$ 's):
 $$
 L(\vec{\theta}) 
 = \frac{1}{N} \sum_{j=1}^{K} \sum_{i\ in B_j} \ell(\vec{y}^i, \hat{\vec{y}^i}) + R(\vec{\theta})
 $$
 Thus, the forward calculation is equivalent.
 
-Now, we have $L(\vec{\theta})$ and wish to calculate $frac{\partial L}{\partial \vec{x}}$, we don't need the dataset anymore for this calculation, so it is equivalent to GD's.
+Now, we have $L(\vec{\theta})$ and wish to calculate $\frac{\partial L}{\partial \vec{x}}$, we don't need the dataset anymore for this calculation, so it is equivalent to GD's.
 
 2. 
 
@@ -448,52 +447,42 @@ and the bottleneck block have $71696384 \approx 70M$ FLOPs.
 part5_q1 = r"""
 **Your answer:**
 
+### Question 1 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Analyze your results from experiment 1.1. In particular,
+1. **More depth doesn't mean better accuracy**  
+We can see that for `K=32` the best depth is `L=2` and for `K=64` its `L=4`, while `L=8,16` both failed to train.
+1. We can see that both `L=8` and `L=64` weren't trainable.  
+A probable cause for that is the vanishing/exploding gradients effect that usually happends in deep networks.  
+Solutions to that problem can be using a different activation function, use batch normalization or initialize the weights differently.
 
 """
 
 part5_q2 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+We can see that again, **more width doesn't mean better accuracy.**  
+*   The best performing width was `K=64` for all depths.
+*   The higher the depth, the higher the variability we got.
+For `L=2` the results were very close, while for `L=8` only the `K=64` model was trainable.
+*   Both experiment gave us a similar conclusion, there is a trade-off between high and low depth/width, and we should look for the middle "sweet spot".
 
 """
 
 part5_q3 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+*   We can see that the varying number of filters `K` made the model better, but only for the `L=2` model.
+The other models were untrainable, probably due to the vanishing/exploding gradients again.
+*   This experiment shows us that increasing `K` throughout the depth of the network, increases the performance.
 
 """
 
 part5_q4 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+*   Compared to experiment 1.1, we can see that a ResNet with a fixed `K` performes poorly compared to a regular CNN.
+*   
 
 """
 
