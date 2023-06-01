@@ -22,12 +22,12 @@ part1_q1 = r"""
         \pderiv{L}{\mat{X}} = \pderiv{L}{\mat{Y}} \pderiv{\mat{Y}}{\mat{X}}
         $$
         - $\pderiv{L}{\mat{Y}}$ is given to us.
-        - $\pderiv{\mat{Y}}{\mat{X}}$ is W^T (because \mat{Y}=\mat{X} \mattr{W} + \vec{b}).
+        - $\pderiv{\mat{Y}}{\mat{X}}$ is W^T, because $\mat{Y}=\mat{X} \mattr{W} + \vec{b}$.
         
 
 1. For the Jacobian tensor $\pderiv{\mat{Y}}{\mat{W}}$:
     1. The shape of this tensor will be (64, 512, 1024, 512).
-    1. This Jacobian is/isnot sparse. why and which elements?
+    1. This Jacobian is/is not sparse. why and which elements?
     1. Given the gradient of the output 
     
 # TODO
