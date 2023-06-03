@@ -461,10 +461,12 @@ part5_q1 = r"""
 
 Analyze your results from experiment 1.1. In particular,
 1. **More depth doesn't mean better accuracy**  
-We can see that for `K=32` the best depth is `L=2` and for `K=64` its `L=4`, while `L=8,16` both failed to train.
-1. We can see that both `L=8` and `L=64` weren't trainable.  
+We can see that the lower depths `L=2` and `L=4` performed better than `L=8` and `L=16`.
+For `K=32` the depths `L=8,16` were untrainable and for `K=64` the depth `L=16` was untrainable.
+This shows than increasing the depth helps until some upper bound, then after that the performance begin to decrease.
+1. We can see that both `L=8` and `L=16` were untrainable.  
 A probable cause for that is the vanishing/exploding gradients effect that usually happens in deep networks.  
-Solutions to that problem can be using a different activation function, use batch normalization or initialize the weights differently.
+A solution to that problem can be using a different activation function, using batch normalization or initializing the weights differently.
 
 """
 
@@ -472,27 +474,28 @@ part5_q2 = r"""
 **Your answer:**
 
 We can see that again, **more width doesn't mean better accuracy.**  
-*   The best performing width was `K=64` for all depths.
-*   The higher the depth, the higher the variability we got.
+*   For `L=4` the higher `K` gave us better performance (by a little), but on the other hand for `L=2`, the best performing `K` was `K=32`.
 For `L=2` the results were very close, while for `L=8` only the `K=64` model was trainable.
 *   Both experiment gave us a similar conclusion, there is a trade-off between high and low depth/width, and we should look for the middle "sweet spot".
-
 """
 
 part5_q3 = r"""
 **Your answer:**
 
-*   We can see that the varying number of filters `K` made the model better, but only for the `L=2` model.
-The other models were untrainable, probably due to the vanishing/exploding gradients again.
-*   This experiment shows us that increasing `K` throughout the depth of the network, increases the performance.
+*   We can see that the varying number of filters `K` made the model a little better in terms of accuracy.
+*   The model with `L=4` was untrainable, probably due to the same vanishing/exploding gradients problem.
+*   This experiment shows us that increasing `K` throughout the depth of the network, helps increasing the model's performance.
+*   This gives us a good intuition for a good architecture for these CNNs.
 
 """
 
 part5_q4 = r"""
 **Your answer:**
 
-*   Compared to experiment 1.1, we can see that a ResNet with a fixed `K` performed poorly compared to a regular CNN.
-*   
+*   First of all, We can see that the ResNet model gave us much higher score compared to the regular CNN model.
+*   With `L=4` and `K=[64, 128, 256]` we got the best results - around 90%.
+*   In comparrison to experiments 1.1 and 1.3, the ResNet models were much more resilient to the higher depth of the network.  
+We saw that the regular CNN models failed to train with a high `L` value, but the ResNet models were able to perform very well with them.
 
 """
 
