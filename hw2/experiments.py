@@ -135,7 +135,7 @@ def cnn_experiment(
         'activation_type' : 'relu',
         'activation_params' : {},
         'pooling_type' : 'max',
-        'pooling_params' : {'kernel_size': 2},
+        'pooling_params' : {'kernel_size': 2, 'stride': 2},
     }
     for k, v in default_kw.items():
         kw[k] = kw.get(k, v)

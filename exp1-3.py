@@ -16,7 +16,7 @@ for l in [2, 3, 4]:
         # Model Params
         filters_per_layer=K,
         layers_per_block=l,
-        pool_every=2,
+        pool_every=l,
         hidden_dims=[1024],
         model_type='cnn', 
     )

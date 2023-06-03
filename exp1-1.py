@@ -11,12 +11,12 @@ for k in [32, 64]:
             batches=100,
             epochs=60,
             early_stopping=3,
-            lr=7e-4,
+            lr=1e-3,
             reg=1e-3,
             # Model Params
             filters_per_layer=[k],
             layers_per_block=l,
-            pool_every=min(l//2, 3),
+            pool_every=l//2 + 1,
             hidden_dims=[1024],
             model_type='cnn', 
         )
