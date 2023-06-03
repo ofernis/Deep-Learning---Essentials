@@ -36,7 +36,7 @@ part1_q1 = r"""
 part1_q2 = r"""
 **Your answer:**
 
-**Yes**, for any practial purposes, backpropagation is required in order to train neural networks.
+**Yes**, for any practical purposes, backpropagation is required in order to train neural networks.
 
 This is because without backpropagation, it would be difficult and computationally expensive (and even infeasible) to calculate these gradients manually.
 Backpropagation automates the process, making training feasible and efficient.
@@ -103,11 +103,11 @@ def part2_dropout_hp():
 part2_q1 = r"""
 **Your answer:**
 
-**1.1**: Our baseline is no dropout setting, with pre-tuned hyperparameters for an overfitted model (overfitting can be inferred from the graphs, where the train accuracy is much higher than the test accuracy).
+**1.1**: Our baseline is no dropout setting, with pre-tuned hyper-parameters for an overfitted model (overfitting can be inferred from the graphs, where the train accuracy is much higher than the test accuracy).
 We see that the training accuracy is higher without dropout in comparison to using dropout, but the test accuracy is lower for the same dropout settings comparison.
 This fits what we expected, as the dropout method "omits" training information and thus decrease the training accuracy, but due to its randomness, it makes the network less sensitive to the influence of single
 neurons and therefore demonstrate better generalization. Looking at our graphs, it is worth mention that as the dropout level increases, the training accuracy decreases (due to the reason we mentioned earlier).
-An oppisite effect is seen in the test accuracy graphs, where the lower accuracy corresponds to higher dropout level (0.8) rather than the lower dropout level (0.4).
+An opposite effect is seen in the test accuracy graphs, where the lower accuracy corresponds to higher dropout level (0.8) rather than the lower dropout level (0.4).
 
 **1.2**: As we see in the graphs, the high-dropout setting had lower accuracy than the low-dropout setting, indicating a lower generalization competence for this setting.
 This might stem from the fact that too many neurons activations are being dropped on this setting (80% percent on average), leading to insufficient optimization in the training phase.
@@ -133,7 +133,7 @@ L_{CE}(\hat{y},y)
 p_y
 $$
 
-To conclude, if this happends for each epoch with decreasing $\epsilon$, then the behavior will be as described.
+To conclude, if this happens for each epoch with decreasing $\epsilon$, then the behavior will be as described.
 
 """
 
@@ -158,7 +158,7 @@ In essence, gradient descent is the optimization process, while backpropagation 
 ### Answer 2
 
 1. **Batch updates**: In GD, the entire training dataset is used to compute the gradient of the cost function before updating the model parameters.
-In SGD, only a single training example (or a mini-batch) is randomlly selected and used to compute the gradient and update the parameters.
+In SGD, only a single training example (or a mini-batch) is randomly selected and used to compute the gradient and update the parameters.
 
 2. **Efficiency**: As GD considers the entire dataset for each parameter update, it can be computationally expensive, especially for large datasets.
 SGD is more efficient compared to GD as it uses a single example for the parameter update.
@@ -168,7 +168,7 @@ SGD might not converge to the global minimum due to the randomness introduced by
 While it might not reach the optimal solution, it often finds a good enough solution in practice and does that faster than GD.
 
 4. **Noise and Regularization**: GD uses the entire dataset, resulting a smoother parameter updates.
-SGD intoduces randomness to the parameter updates, making it more noisy, but allowing it to escape local minima sometimes, making it an implicit form of regularization.
+SGD introduces randomness to the parameter updates, making it more noisy, but allowing it to escape local minima sometimes, making it an implicit form of regularization.
 
 ### Answer 3
 SGD is commonly used in the practice of deep learning for several reasons:
@@ -177,7 +177,7 @@ SGD's ability to update parameters based on individual examples (or mini-batches
 
 2. **Faster convergence**: While SGD's updates tends to be noisier than GD's, it can actually lead to faster convergence in practice.
 
-3. **Generalization**: SGD's inherent stochasticity during training acts as a form of regularization, preventing overfitting and promoting better generalization.
+3. **Generalization**: SGD's inherent stochastically during training acts as a form of regularization, preventing overfitting and promoting better generalization.
 
 4. **Avoiding local minima**: Deep learning models often have complex, high-dimensional loss landscapes with numerous local minima. GD relies on the entire dataset and may get trapped in suboptimal local minima.
 SGD's stochastic nature provides a mechanism for escaping these suboptimal solutions.
@@ -190,20 +190,21 @@ $$
 We can re-write the above using $K$ disjoint batches (assume we keep the same order for the $i$ 's):
 $$
 L(\vec{\theta}) 
-= \frac{1}{N} \sum_{j=1}^{K} \sum_{i\ in B_j} \ell(\vec{y}^i, \hat{\vec{y}^i}) + R(\vec{\theta})
+= \frac{1}{N} \sum_{j=1}^{K} \sum_{i \in B_j} \ell(\vec{y}^i, \hat{\vec{y}^i}) + R(\vec{\theta})
 $$
 Thus, the forward calculation is equivalent.
 
 Now, we have $L(\vec{\theta})$ and wish to calculate $\frac{\partial L}{\partial \vec{x}}$, we don't need the dataset anymore for this calculation, so it is equivalent to GD's.
 
-2. 
+2. The most probable thing that happened is that during each forward pass, we accumulate the activation's values and store them in the memory.
+Thus, after multiple forward passes, the memory could be filled with the values we accumulated.
 
 """
 
 part2_q4 = r"""
 **Your answer:**
 
-Using the **chain rule** we get:
+1. Using the **chain rule** we get:
 $$
 \frac{\partial f}{\partial x_0} = \frac{\partial f}{\partial f_n} \frac{\partial f_n}{\partial f_{n-1}} \cdots \frac{\partial f_1}{\partial x_0}
 $$
@@ -221,7 +222,7 @@ $$
 \end{align}
 $$
 
-We can compute the above using only 2 variables to store the calculations - accumalated derivative $\delta$ and current derivative $d$:
+We can compute the above using only 2 variables to store the calculations - accumulated derivative $\delta$ and current derivative $d$:
 $$
 \begin{align*}
 &1.~ \text{Init:} \\
@@ -264,6 +265,15 @@ $$
 $$
 
 Again, we reduced the memory complexity to $\mathcal{O}(1)$ while keeping time complexity at $\mathcal{O}(n)$.
+
+2. **Yes**, this technique can be generalized for any arbitrary computational graphs.  
+The change that we need to make is computing the gradient for each input (in forward mode) 
+or for each output (in backward mode).
+This will increase the memory usage to $\mathcal{O} \left( \text{\# \{ inputs or outputs \}} \right)$.
+
+3. In deep network architectures, it is common that the number of outputs is smaller than the number of inputs 
+(i.e., the input is a 32x32x3 image - 3072 inputs, while the output is a vector of size $C$ - the number of classes, which is much smaller).  
+Thus, the the backprop algorithm with the backward mode will benefit from these techniques because the memory cost will be much lower.
 """
 
 # ==============
@@ -361,15 +371,15 @@ Answer these questions for two possible scenarios:
 2. A person with the disease shows no clear symptoms and may die with high probability if not diagnosed early enough, either by your model or by the expensive test.
 
 **Scenario 1 - non-lethal symptoms**  
-*   Because the symptoms are non-leathal, and confirm the diagnosis.
+*   Because the symptoms are non-lethal, and confirm the diagnosis.
 *   So, we would choose a threshold with more weight towards lower FPR.
-*   This means that less patients will falsly get diagnosed positive for the illness and get the expensive tests to confirm the diagnosis.
+*   This means that less patients will falsely get diagnosed positive for the illness and get the expensive tests to confirm the diagnosis.
 *   By that, we reduced the cost while maintaining the low loss of life.
 
-**Scenatio 2 - lethal illness and no clear symptoms**  
+**Scenario 2 - lethal illness and no clear symptoms**  
 *   The illness is lethal and the symptoms are not clear, so we must allow more false-negatives to be able to save lives.
 *   Thus, we should choose the threshold with more weight towards the low FNR.
-*   This means that more patients will be falsly diagnosed for the illness, and start the treatment to save their lives
+*   This means that more patients will be falsely diagnosed for the illness, and start the treatment to save their lives
 and that the expensive test will give us the true results later on.
 *   By that, we reduced the loss of life while increasing the cost by a little (more expensive tests).
 
@@ -453,7 +463,7 @@ Analyze your results from experiment 1.1. In particular,
 1. **More depth doesn't mean better accuracy**  
 We can see that for `K=32` the best depth is `L=2` and for `K=64` its `L=4`, while `L=8,16` both failed to train.
 1. We can see that both `L=8` and `L=64` weren't trainable.  
-A probable cause for that is the vanishing/exploding gradients effect that usually happends in deep networks.  
+A probable cause for that is the vanishing/exploding gradients effect that usually happens in deep networks.  
 Solutions to that problem can be using a different activation function, use batch normalization or initialize the weights differently.
 
 """
@@ -481,7 +491,7 @@ The other models were untrainable, probably due to the vanishing/exploding gradi
 part5_q4 = r"""
 **Your answer:**
 
-*   Compared to experiment 1.1, we can see that a ResNet with a fixed `K` performes poorly compared to a regular CNN.
+*   Compared to experiment 1.1, we can see that a ResNet with a fixed `K` performed poorly compared to a regular CNN.
 *   
 
 """
@@ -502,7 +512,7 @@ In the second picture, two dogs were classified as cats and the cat was not dete
 We'll also notice that the dog that was classified correctly had a score of 0.51, which implies a significant level of uncertainty.
 All in all, the model's performance was not good for these 2 pictures.  
 2. We'll examine numerous reasons for the model failures and suggest compatible solutions for the issues:  
-- A possible reason for the model failure is lack of light/dark images, which makes objects' features less noticable and produces difficulties in the models classification.
+- A possible reason for the model failure is lack of light/dark images, which makes objects' features less noticeable and produces difficulties in the models classification.
 This can be resolved by adding brightness to the images, changing their contrast rate or using similar lighting techniques.  
 - Another possible reason for the model failures can be a missing class, on which the model was not trained - like in the first picture, where it's seems like there is no dolphin class exists.
 The solution for that issue is to train the model to classify dolphins in addition to the existing classes.  
