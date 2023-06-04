@@ -493,7 +493,8 @@ part5_q4 = r"""
 **Your answer:**
 
 *   First of all, We can see that the ResNet model gave us much higher score compared to the regular CNN model.
-*   With `L=4` and `K=[64, 128, 256]` we got the best results - around 90%.
+*   With `L=2` and `K=[64, 128, 256]` we got the best results - around 90%.
+This is consistent with the idea of increasing the number of channels the deeper we go
 *   In comparrison to experiments 1.1 and 1.3, the ResNet models were much more resilient to the higher depth of the network.  
 We saw that the regular CNN models failed to train with a high `L` value, but the ResNet models were able to perform very well with them.
 

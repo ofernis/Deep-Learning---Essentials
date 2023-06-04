@@ -18,7 +18,6 @@ for K, L in [([32], [8,16,32]),([64,128,256], [2,4,8])]:
             layers_per_block=l,
             pool_every=l//2+1,
             batchnorm=True,
-            dropout=0.4,
             hidden_dims=[1024],
             pooling_type='avg',
             model_type='resnet',
