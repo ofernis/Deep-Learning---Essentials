@@ -13,9 +13,9 @@ part1_q1 = r"""
 
 1. For the Jacobian tensor $\pderiv{\mat{Y}}{\mat{X}}$:
     1. The shape of this tensor will be (64, 512, 64, 1024).
-    1. This Jacobian is sparse. The only elements that are not zero, correspond to the an index (i,j,i,k),
+    2. This Jacobian is sparse. The only elements that are not zero, correspond to the an index (i,j,i,k),
         meaning that this is the derivative of the sample i.
-    1. No, we don't need to materialize the Jacobian tensor $\pderiv{\mat{Y}}{\mat{X}}$ in order to calculate the downstream gradient $\delta\mat{X}$
+    3. No, we don't need to materialize the Jacobian tensor $\pderiv{\mat{Y}}{\mat{X}}$ in order to calculate the downstream gradient $\delta\mat{X}$
     
         Instead, we can leverage the chain rule to compute the gradient efficiently:
         $$
@@ -25,10 +25,10 @@ part1_q1 = r"""
         - $\pderiv{\mat{Y}}{\mat{X}}$ is W^T (because \mat{Y}=\mat{X} \mattr{W} + \vec{b}).
         
 
-1. For the Jacobian tensor $\pderiv{\mat{Y}}{\mat{W}}$:
+2. For the Jacobian tensor $\pderiv{\mat{Y}}{\mat{W}}$:
     1. The shape of this tensor will be (64, 512, 1024, 512).
-    1. This Jacobian is/isnot sparse. why and which elements?
-    1. Given the gradient of the output 
+    2. This Jacobian is/isnot sparse. why and which elements?
+    3. Given the gradient of the output 
     
 # TODO
 """
