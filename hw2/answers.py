@@ -13,22 +13,46 @@ part1_q1 = r"""
 
 1. For the Jacobian tensor $\pderiv{\mat{Y}}{\mat{X}}$:
     1. The shape of this tensor will be (64, 512, 64, 1024).
-    2. This Jacobian is sparse. The only elements that are not zero, correspond to the an index (i,j,i,k),
-        meaning that this is the derivative of the sample i.
+    2. This Jacobian is sparse. We're differentiating each output sample (in Y) w.r.t each input sample (in X) and we know
+    that each output sample derivative depends only on its corresponding input sample. 
+    Hence, the only elements that are not zero correspond to indices of the form (i,j,i,k) where $1<=i<=64$,
+    meaning that this is the derivative of the i-th output sample w.r.t its corresponding input sample (same i-th index).
     3. No, we don't need to materialize the Jacobian tensor $\pderiv{\mat{Y}}{\mat{X}}$ in order to calculate the downstream gradient $\delta\mat{X}$
     
         Instead, we can leverage the chain rule to compute the gradient efficiently:
         $$
-        \pderiv{L}{\mat{X}} = \pderiv{L}{\mat{Y}} \pderiv{\mat{Y}}{\mat{X}}
+        \delta\mat{X}=\pderiv{L}{\mat{X}} = \pderiv{L}{\mat{Y}} \pderiv{\mat{Y}}{\mat{X}}
         $$
         - $\pderiv{L}{\mat{Y}}$ is given to us.
-        - $\pderiv{\mat{Y}}{\mat{X}}$ is $\mat{W}^T$, because $\mat{Y}=\mat{X} \mattr{W} + \vec{b}$.
+        - $\pderiv{\mat{Y}}{\mat{X}}$ is $\mattr{W}$ (because $\mat{Y}=\mat{X} \mattr{W} + \vec{b}$ - Using matrix differentiation rules).  
+    
+    As we saw in the previous clause, the only non-zero elements of the Jacobian tensor $\pderiv{\mat{Y}}{\mat{X}}$ have the index form of (i,j,i,k),
+    meaning that only those elements in the Jacobian tensor are needed
+    in order to compute the gradient (all other elements in the product matrix will be set to zero).  
+    So eventually we get: 
+    $$
+    \delta\mat{X}=\pderiv{L}{\mat{Y}}\mattr{W}=\delta\mat{Y}\mattr{W}
+    $$
         
-
 2. For the Jacobian tensor $\pderiv{\mat{Y}}{\mat{W}}$:
-    1. The shape of this tensor will be (64, 512, 1024, 512).
-    1. Yes, similarly to the previous Jacobian.
-    1. Similarly, we can use the chain rule to calculate this, without materializing the Jacobian.
+    1. The shape of this tensor will be (64, 512, 512, 1024).
+    2. This Jacobian is sparse again, for the same reason as earlier - We're differentiating each output feature (in Y) w.r.t each input feature (in W), 
+    such that the only non-zero elements correspond to indices of the form (i,j,i,k) where $1<=i<=64$,
+    meaning that this is the derivative of the i-th output feature w.r.t its corresponding input feature (same i-th index).
+    3. No, given the gradient of the output $\pderiv{\mat{L}}{\mat{Y}}$, we can again use the chain rule to compute the gradient efficiently:
+        $$
+        \delta\mat{W}=\pderiv{L}{\mat{W}} = \pderiv{L}{\mat{Y}} \pderiv{\mat{Y}}{\mat{W}}
+        $$
+        - $\pderiv{L}{\mat{Y}}$ is given to us.
+        - $\pderiv{\mat{Y}}{\mat{W}}$ is $\mattr{X}$ (because $\mat{Y}=\mat{X} \mattr{W} + \vec{b}$ - Using matrix differentiation rules).  
+    
+    As we saw in the previous clause, the only non-zero elements of the Jacobian tensor $\pderiv{\mat{Y}}{\mat{W}}$ have the index form of (i,j,i,k),
+    meaning that only those elements in the Jacobian tensor are needed
+    in order to compute the gradient (all other elements in the product matrix will be set to zero).
+    So eventually we get: 
+    $$
+    \delta\mat{W}=\pderiv{L}{\mat{Y}}\mattr{W}=\delta\mat{Y}\mattr{X}
+    $$
     
 # TODO
 """

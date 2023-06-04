@@ -5,3 +5,5 @@ environment.yml
 *.sh
 *.out
 *.pyc
+hw2/__pycache__/answers.cpython-38.pyc
+hw2/__pycache__/optimizers.cpython-38.pyc
