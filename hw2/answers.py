@@ -22,13 +22,13 @@ part1_q1 = r"""
         \pderiv{L}{\mat{X}} = \pderiv{L}{\mat{Y}} \pderiv{\mat{Y}}{\mat{X}}
         $$
         - $\pderiv{L}{\mat{Y}}$ is given to us.
-        - $\pderiv{\mat{Y}}{\mat{X}}$ is W^T (because \mat{Y}=\mat{X} \mattr{W} + \vec{b}).
+        - $\pderiv{\mat{Y}}{\mat{X}}$ is $\mat{W}^T$, because $\mat{Y}=\mat{X} \mattr{W} + \vec{b}$.
         
 
 2. For the Jacobian tensor $\pderiv{\mat{Y}}{\mat{W}}$:
     1. The shape of this tensor will be (64, 512, 1024, 512).
-    2. This Jacobian is/isnot sparse. why and which elements?
-    3. Given the gradient of the output 
+    1. Yes, similarly to the previous Jacobian.
+    1. Similarly, we can use the chain rule to calculate this, without materializing the Jacobian.
     
 # TODO
 """
@@ -36,7 +36,7 @@ part1_q1 = r"""
 part1_q2 = r"""
 **Your answer:**
 
-**Yes**, backpropagation is required in order to train neural networks.
+**Yes**, for any practical purposes, backpropagation is required in order to train neural networks.
 
 This is because without backpropagation, it would be difficult and computationally expensive (and even infeasible) to calculate these gradients manually.
 Backpropagation automates the process, making training feasible and efficient.
@@ -103,11 +103,11 @@ def part2_dropout_hp():
 part2_q1 = r"""
 **Your answer:**
 
-**1.1**: Our baseline is no dropout setting, with pre-tuned hyperparameters for an overfitted model (overfitting can be inferred from the graphs, where the train accuracy is much higher than the test accuracy).
+**1.1**: Our baseline is no dropout setting, with pre-tuned hyper-parameters for an overfitted model (overfitting can be inferred from the graphs, where the train accuracy is much higher than the test accuracy).
 We see that the training accuracy is higher without dropout in comparison to using dropout, but the test accuracy is lower for the same dropout settings comparison.
 This fits what we expected, as the dropout method "omits" training information and thus decrease the training accuracy, but due to its randomness, it makes the network less sensitive to the influence of single
 neurons and therefore demonstrate better generalization. Looking at our graphs, it is worth mention that as the dropout level increases, the training accuracy decreases (due to the reason we mentioned earlier).
-An oppisite effect is seen in the test accuracy graphs, where the lower accuracy corresponds to higher dropout level (0.8) rather than the lower dropout level (0.4).
+An opposite effect is seen in the test accuracy graphs, where the lower accuracy corresponds to higher dropout level (0.8) rather than the lower dropout level (0.4).
 
 **1.2**: As we see in the graphs, the high-dropout setting had lower accuracy than the low-dropout setting, indicating a lower generalization competence for this setting.
 This might stem from the fact that too many neurons activations are being dropped on this setting (80% percent on average), leading to insufficient optimization in the training phase.
@@ -133,7 +133,7 @@ L_{CE}(\hat{y},y)
 p_y
 $$
 
-To conclude, if this happends for each epoch with decreasing $\epsilon$, then the behavior will be as described.
+To conclude, if this happens for each epoch with decreasing $\epsilon$, then the behavior will be as described.
 
 """
 
@@ -158,7 +158,7 @@ In essence, gradient descent is the optimization process, while backpropagation 
 ### Answer 2
 
 1. **Batch updates**: In GD, the entire training dataset is used to compute the gradient of the cost function before updating the model parameters.
-In SGD, only a single training example (or a mini-batch) is randomlly selected and used to compute the gradient and update the parameters.
+In SGD, only a single training example (or a mini-batch) is randomly selected and used to compute the gradient and update the parameters.
 
 2. **Efficiency**: As GD considers the entire dataset for each parameter update, it can be computationally expensive, especially for large datasets.
 SGD is more efficient compared to GD as it uses a single example for the parameter update.
@@ -168,7 +168,7 @@ SGD might not converge to the global minimum due to the randomness introduced by
 While it might not reach the optimal solution, it often finds a good enough solution in practice and does that faster than GD.
 
 4. **Noise and Regularization**: GD uses the entire dataset, resulting a smoother parameter updates.
-SGD intoduces randomness to the parameter updates, making it more noisy, but allowing it to escape local minima sometimes, making it an implicit form of regularization.
+SGD introduces randomness to the parameter updates, making it more noisy, but allowing it to escape local minima sometimes, making it an implicit form of regularization.
 
 ### Answer 3
 SGD is commonly used in the practice of deep learning for several reasons:
@@ -177,7 +177,7 @@ SGD's ability to update parameters based on individual examples (or mini-batches
 
 2. **Faster convergence**: While SGD's updates tends to be noisier than GD's, it can actually lead to faster convergence in practice.
 
-3. **Generalization**: SGD's inherent stochasticity during training acts as a form of regularization, preventing overfitting and promoting better generalization.
+3. **Generalization**: SGD's inherent stochastically during training acts as a form of regularization, preventing overfitting and promoting better generalization.
 
 4. **Avoiding local minima**: Deep learning models often have complex, high-dimensional loss landscapes with numerous local minima. GD relies on the entire dataset and may get trapped in suboptimal local minima.
 SGD's stochastic nature provides a mechanism for escaping these suboptimal solutions.
@@ -186,25 +186,25 @@ SGD's stochastic nature provides a mechanism for escaping these suboptimal solut
 1. **Yes**, this method will produce a gradient equivalent to GD. We remember that:
 $$
 L(\vec{\theta}) = \frac{1}{N} \sum_{i=1}^{N} \ell(\vec{y}^i, \hat{\vec{y}^i}) + R(\vec{\theta})
-$$
-
-We can re-write the above using $K$ disjoint batches (assume we keep the same order for the $i$s):
+$$  
+We can re-write the above using $K$ disjoint batches (assume we keep the same order for the $i$ 's):
 $$
 L(\vec{\theta}) 
-= \frac{1}{N} \sum_{j=1}^{K} \sum_{i\ in B_j} \ell(\vec{y}^i, \hat{\vec{y}^i}) + R(\vec{\theta})
+= \frac{1}{N} \sum_{j=1}^{K} \sum_{i \in B_j} \ell(\vec{y}^i, \hat{\vec{y}^i}) + R(\vec{\theta})
 $$
 Thus, the forward calculation is equivalent.
 
-Now, we have $L(\vec{\theta})$ and wish to calculate $frac{\partial L}{\partial \vec{x}}$, we don't need the dataset anymore for this calculation, so it is equivalent to GD's.
+Now, we have $L(\vec{\theta})$ and wish to calculate $\frac{\partial L}{\partial \vec{x}}$, we don't need the dataset anymore for this calculation, so it is equivalent to GD's.
 
-2. 
+2. The most probable thing that happened is that during each forward pass, we accumulate the activation's values and store them in the memory.
+Thus, after multiple forward passes, the memory could be filled with the values we accumulated.
 
 """
 
 part2_q4 = r"""
 **Your answer:**
 
-Using the **chain rule** we get:
+1. Using the **chain rule** we get:
 $$
 \frac{\partial f}{\partial x_0} = \frac{\partial f}{\partial f_n} \frac{\partial f_n}{\partial f_{n-1}} \cdots \frac{\partial f_1}{\partial x_0}
 $$
@@ -222,7 +222,7 @@ $$
 \end{align}
 $$
 
-We can compute the above using only 2 variables to store the calculations - accumalated derivative $\delta$ and current derivative $d$:
+We can compute the above using only 2 variables to store the calculations - accumulated derivative $\delta$ and current derivative $d$:
 $$
 \begin{align*}
 &1.~ \text{Init:} \\
@@ -265,6 +265,15 @@ $$
 $$
 
 Again, we reduced the memory complexity to $\mathcal{O}(1)$ while keeping time complexity at $\mathcal{O}(n)$.
+
+2. **Yes**, this technique can be generalized for any arbitrary computational graphs.  
+The change that we need to make is computing the gradient for each input (in forward mode) 
+or for each output (in backward mode).
+This will increase the memory usage to $\mathcal{O} \left( \text{\# \{ inputs or outputs \}} \right)$.
+
+3. In deep network architectures, it is common that the number of outputs is smaller than the number of inputs 
+(i.e., the input is a 32x32x3 image - 3072 inputs, while the output is a vector of size $C$ - the number of classes, which is much smaller).  
+Thus, the the backprop algorithm with the backward mode will benefit from these techniques because the memory cost will be much lower.
 """
 
 # ==============
@@ -362,15 +371,15 @@ Answer these questions for two possible scenarios:
 2. A person with the disease shows no clear symptoms and may die with high probability if not diagnosed early enough, either by your model or by the expensive test.
 
 **Scenario 1 - non-lethal symptoms**  
-*   Because the symptoms are non-leathal, and confirm the diagnosis.
+*   Because the symptoms are non-lethal, and confirm the diagnosis.
 *   So, we would choose a threshold with more weight towards lower FPR.
-*   This means that less patients will falsly get diagnosed positive for the illness and get the expensive tests to confirm the diagnosis.
+*   This means that less patients will falsely get diagnosed positive for the illness and get the expensive tests to confirm the diagnosis.
 *   By that, we reduced the cost while maintaining the low loss of life.
 
-**Scenatio 2 - lethal illness and no clear symptoms**  
+**Scenario 2 - lethal illness and no clear symptoms**  
 *   The illness is lethal and the symptoms are not clear, so we must allow more false-negatives to be able to save lives.
 *   Thus, we should choose the threshold with more weight towards the low FNR.
-*   This means that more patients will be falsly diagnosed for the illness, and start the treatment to save their lives
+*   This means that more patients will be falsely diagnosed for the illness, and start the treatment to save their lives
 and that the expensive test will give us the true results later on.
 *   By that, we reduced the loss of life while increasing the cost by a little (more expensive tests).
 
@@ -419,46 +428,24 @@ def part4_optim_hp():
 
 
 part4_q1 = r"""
-**Your answer:**
-
-
-1. Assuming no bias added to the layers, for the regular block we get $256 \times 3 \times 3 + 256 \times 3 \times 3 = 4608$
-and for the bottleneck we get $256 \times 1 \times 1 + 64 \times 3 \times 3 + 64 \times 1 \times 1 = 896$.
-
-2. assuming again no bias and assuming we have an input feature map with dimensions $H \times W \times C$, 
-We know that the number of Floating Point Operations required for each convolutional layer equals to the sum of kernel_size $\times$ kernel_size  $\times C$ multiplications
-per output element and kernel_size $\times$ kernel_size  $\times C - 1$ (excluding bias term) additions per output element. 
-Thus for the whole blocks, the ratio of required FLOPS number is roughly the same as the number of parameters ratio - 1 : 5 (bottleneck : regular residual).
-
-3. Well explain the two requested aspects:
-
-(1) Spatial Combination within Feature Maps:
-    
-Regular Residual Block - In a regular residual block, the spatial combination within feature maps is achieved through two successive 3x3 convolutions.
-The first convolutional layer processes the input feature maps and induces intermediate feature maps, while the second convolutional layer further operates on the intermediate feature maps to produce the final output.
-The skip connection in the regular block directly adds the input feature maps to the output of the second convolutional layer.
-This addition operation allows for spatial combination by adding the local spatial information preserved in the input to the transformed feature maps generated by the convolutional layers.
-
-Bottleneck Residual Block - The bottleneck residual block uses a 1x1 convolutional layer for dimension reduction, followed by a 3x3 convolutional layer, and finally a 1x1 convolutional layer for dimension restoration. 
-As we learned, the 1x1 convolution in the bottleneck block helps reduce the computational complexity by decreasing the number of channels before performing the more expensive 3x3 convolution.
-This dimension reduction effectively reduces the spatial resolution within the feature maps, limiting the spatial combination within the block.
-
-(2) Combination across Feature Maps: 
-    
-Regular Residual Block - In the regular residual block, the combination across feature maps is facilitated by the skip connection that directly adds the input feature maps to the output of the second convolutional layer. 
-This addition operation combines the feature maps element-wise, allowing the information from different channels to be combined and interact. 
-By summing the input and output, the regular block can effectively integrate information across feature maps.
-
-
-Bottleneck Residual Block - The bottleneck residual block also provides a means to combine information across feature maps, but to a lesser extent compared to the regular block.
-The bottleneck block achieves this through the 1x1 convolutional layers. The first 1x1 convolution reduces the number of channels, effectively reducing the number of feature maps.
-The subsequent 1x1 convolution restores the dimensionality back to the original number of channels.
-While this dimension reduction and restoration process allows some interaction across feature maps, the overall combination is less direct and may not fully exploit the interaction potential compared to the regular block.
-
-
-To conclude, the regular residual block provides stronger spatial and feature map combination capabilities due to its consecutive 3x3 convolutions and direct skip connection.
-The bottleneck residual block sacrifices some of these combination abilities in favor of reducing computational complexity by using 1x1 convolutions for dimension reduction and restoration.
-The specific trade-offs between computational efficiency and combination abilities can be beneficial depending on the requirements of the neural network architecture and the available computational resources. 
+**Your answer:**  
+1. The number of parameters a  convolution has is calculated by: $\left( K \times K \times C_{\text{in}} + 1 \right) \cdot C_{\text{out}}$.  
+Where $K$ is the `kernel_size` and $C_{\text{in}}, C_{\text{out}}$ are the number of `channels`, each filter also has +1 for the `bias`.  
+    -   The regular block have 2 convolution layers:  
+    The first layer have $\left( 3 \times 3 \times 256 + 1 \right) \cdot 64 = 147520$ parameters.  
+    The second layer have $\left( 3 \times 3 \times 64 + 1 \right) \cdot 256 = 147712$.  
+    Thus, the regular block have a total of $295232$ parameters.  
+    -   The bottleneck block have 3 layers: The first have $\left( 1 \times 1 \times 256 + 1 \right) \cdot 64 = 16448$.  
+    The second have $\left( 3 \times 3 \times 64 + 1 \right) \cdot 64 = 36928$.  
+    The third have $\left( 1 \times 1 \times 64 + 1 \right) \cdot 256 = 16640$.
+    Giving a total of $70016$ parameters (~25% of the regular block!).  
+2. The number of FLOPs done in a convolution layer is calculated by: $\# \text{FLOPs} = \left[ \left( K^2 \times C_{\text{in}} + 1 \right) \cdot C_{\text{out}} \right] \cdot \left( H \times W \right)
+= \# \text{parameters} \times H \times W $.  
+Thus, for a $32 \times 32$ images, the regular block have $302317568 \approx 300M$ FLOPs 
+and the bottleneck block have $71696384 \approx 70M$ FLOPs.  
+3. Well explain the two requested aspects:  
+    -   Spatial Combination within Feature Maps: The bottleneck block will have a lower spatial ability than the regular block, because it reduces and restores the dimensions of the data to save calculations. 
+    -   Combination across Feature Maps: The bottleneck reduction and restoration should not affect this ability directly. However, the spatial ability could lead to a secondary affect on this ability.
 """
 
 # ==============
@@ -470,52 +457,46 @@ The specific trade-offs between computational efficiency and combination abiliti
 part5_q1 = r"""
 **Your answer:**
 
+### Question 1 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Analyze your results from experiment 1.1. In particular,
+1. **More depth doesn't mean better accuracy**  
+We can see that the lower depths `L=2` and `L=4` performed better than `L=8` and `L=16`.
+For `K=32` the depths `L=8,16` were untrainable and for `K=64` the depth `L=16` was untrainable.
+This shows than increasing the depth helps until some upper bound, then after that the performance begin to decrease.
+1. We can see that both `L=8` and `L=16` were untrainable.  
+A probable cause for that is the vanishing/exploding gradients effect that usually happens in deep networks.  
+A solution to that problem can be using a different activation function, using batch normalization or initializing the weights differently.
 
 """
 
 part5_q2 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+We can see that again, **more width doesn't mean better accuracy.**  
+*   For `L=4` the higher `K` gave us better performance (by a little), but on the other hand for `L=2`, the best performing `K` was `K=32`.
+For `L=2` the results were very close, while for `L=8` only the `K=64` model was trainable.
+*   Both experiment gave us a similar conclusion, there is a trade-off between high and low depth/width, and we should look for the middle "sweet spot".
 """
 
 part5_q3 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+*   We can see that the varying number of filters `K` made the model a little better in terms of accuracy.
+*   The model with `L=4` was untrainable, probably due to the same vanishing/exploding gradients problem.
+*   This experiment shows us that increasing `K` throughout the depth of the network, helps increasing the model's performance.
+*   This gives us a good intuition for a good architecture for these CNNs.
 
 """
 
 part5_q4 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+*   First of all, We can see that the ResNet model gave us much higher score compared to the regular CNN model.
+*   With `L=2` and `K=[64, 128, 256]` we got the best results - around 90%.
+This is consistent with the idea of increasing the number of channels the deeper we go
+*   In comparrison to experiments 1.1 and 1.3, the ResNet models were much more resilient to the higher depth of the network.  
+We saw that the regular CNN models failed to train with a high `L` value, but the ResNet models were able to perform very well with them.
 
 """
 
@@ -533,20 +514,16 @@ part6_q1 = r"""
 It can be seen in the first picture, where two dolphins were classified as persons and the tail of the third one was classified as a surfboard.
 In the second picture, two dogs were classified as cats and the cat was not detected at all.
 We'll also notice that the dog that was classified correctly had a score of 0.51, which implies a significant level of uncertainty.
-All in all, the model's performance was not good for these 2 pictures.
-
-2. We'll examine numerous reasons for the model failures and suggest compatible solutions for the issues:
-- A possible reason for the model failure is lack of light/dark images, which makes objects' features less noticable and produces difficulties in the models classification.
-This can be resolved by adding brightness to the images, changing their contrast rate or using similar lighting techniques.
-
+All in all, the model's performance was not good for these 2 pictures.  
+2. We'll examine numerous reasons for the model failures and suggest compatible solutions for the issues:  
+- A possible reason for the model failure is lack of light/dark images, which makes objects' features less noticeable and produces difficulties in the models classification.
+This can be resolved by adding brightness to the images, changing their contrast rate or using similar lighting techniques.  
 - Another possible reason for the model failures can be a missing class, on which the model was not trained - like in the first picture, where it's seems like there is no dolphin class exists.
-The solution for that issue is to train the model to classify dolphins in addition to the existing classes.
-
+The solution for that issue is to train the model to classify dolphins in addition to the existing classes.  
 - Furthermore, a bias that is related to image setup in the training phase could lead to a misclassification of objects. 
 For example, in the first image there is a background of sea surface, sun and sky, which might cause the model to classify the dolphins as humans - 
 in case it was trained on pictures of humans with beach background and on pictures of dolphins with underwater background. 
-To solve this problem, more pictures of each class can be provided for the training, containing different backgrounds in order to prevent this kind of classification bias.
-
+To solve this problem, more pictures of each class can be provided for the training, containing different backgrounds in order to prevent this kind of classification bias.  
 - Looking at the second picture, the overlapping of the objects (occlusion) might cause misclassification or missing detection of an object.
 A solution for that might involve some spatial manipulations like rotation, cropping or resizing some objects in the pictures.
 We'll mention that the YOLO model's algorithm divides the image into a grid of boxes, and tries to detect+classify an object in each box according to its center.
